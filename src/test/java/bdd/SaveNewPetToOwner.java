@@ -1,6 +1,5 @@
 package bdd;
 
-import io.cucumber.java.Before;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -11,7 +10,7 @@ import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class FindPetStep {
+public class SaveNewPetToOwner {
 	@Autowired
 	PetService petService;
 
@@ -26,11 +25,11 @@ public class FindPetStep {
 
 	private Owner hamid;
 	private Pet pet;
-	private Pet found;
 	private PetType petType;
 
-	@Before()
-	public void setup() {
+
+	@Given("An existing owner.")
+	public void thereIsAOwner() {
 		hamid = new Owner();
 		hamid.setFirstName("Hamid");
 		hamid.setLastName("Khodadadi");
@@ -38,14 +37,13 @@ public class FindPetStep {
 		hamid.setCity("Tehran");
 		hamid.setTelephone("09353483113");
 		ownerRepository.save(hamid);
+	}
 
+	@Given("A existing pet.")
+	public void thereIsAPet() {
 		petType = new PetType();
 		petType.setName("Cat");
 		petTypeRepository.save(petType);
-	}
-
-	@Given("A pet with an ID.")
-	public void thereIsAPetCalled() {
 
 		pet = new Pet();
 		pet.setName("HamidPet");
@@ -55,13 +53,18 @@ public class FindPetStep {
 		petRepository.save(pet);
 	}
 
-	@When("Someone wants to find the bird with his ID.")
-	public void searchPetWithId() {
-		found =  petService.findPet(pet.getId());
+	@When("The owner wants to save new pet in his list.")
+	public void savePetInOwnerList() {
+		petService.savePet(pet, hamid);
 	}
 
-	@Then("The pet is successfully found with his ID.")
-	public void checkPetBeFound() {
-		assertEquals(pet.getId(), found.getId());
+	@Then("The pet must be successfully added to his pets.")
+	public void checkPetAdded() {
+		assertEquals(hamid.getId(), pet.getOwner().getId());
+	}
+
+	@Then("The pet must be successfully saved in his pets list.")
+	public void checkPetSaved() {
+		assertEquals(pet, hamid.getPet(pet.getName()));
 	}
 }

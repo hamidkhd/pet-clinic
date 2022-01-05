@@ -23,7 +23,7 @@ public class AddNewPetToOwnerStep {
 
 
 	@Given("An owner.")
-	public void thereIsAPetCalled() {
+	public void thereIsAOwner() {
 		hamid = new Owner();
 		hamid.setFirstName("Hamid");
 		hamid.setLastName("Khodadadi");
@@ -34,12 +34,12 @@ public class AddNewPetToOwnerStep {
 	}
 
 	@When("The owner adds that new pet to his list.")
-	public void searchOwnerWithId() {
+	public void addPetToOwnerList() {
 		newPet =  petService.newPet(hamid);
 	}
 
 	@Then("The pet must be successfully added to his pets list.")
-	public void checkOwnerBeFound() {
+	public void checkPetAdded() {
 		assertEquals(hamid.getId(), newPet.getOwner().getId());
 	}
 }
